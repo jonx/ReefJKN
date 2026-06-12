@@ -97,6 +97,18 @@ class Application {
 //        return false
 //    }
     
+    var icon: NSImage? {
+        if let runningApplication, let icon = runningApplication.icon {
+            return icon
+        }
+
+        if let bundleUrl {
+            return NSWorkspace.shared.icon(forFile: bundleUrl.path)
+        }
+
+        return nil
+    }
+
     func focus() {
         self.activate()
     }

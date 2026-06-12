@@ -32,31 +32,22 @@ final class CyclePanel: NSPanel, NSWindowDelegate {
         self.backgroundColor = .clear
         self.hidesOnDeactivate = true
         
+        // Native look: system popover material that follows Light/Dark mode.
         let effectView = NSVisualEffectView(frame: .zero)
         effectView.autoresizingMask = [.width, .height]
-        effectView.material = .hudWindow
+        effectView.material = .popover
         effectView.blendingMode = .behindWindow
         effectView.state = .active
-        effectView.appearance = NSAppearance(named: .vibrantDark)
 
         effectView.wantsLayer = true
-        effectView.layer?.cornerRadius = 12
+        effectView.layer?.cornerRadius = 16
         effectView.layer?.cornerCurve = .continuous
         effectView.layer?.masksToBounds = true
 
-        // Dark tint layer to keep the panel dark even in Light Mode.
-        let tintView = NSView(frame: .zero)
-        tintView.translatesAutoresizingMaskIntoConstraints = false
-        tintView.wantsLayer = true
-        tintView.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.28).cgColor
-        effectView.addSubview(tintView)
-        NSLayoutConstraint.activate([
-            tintView.leadingAnchor.constraint(equalTo: effectView.leadingAnchor),
-            tintView.trailingAnchor.constraint(equalTo: effectView.trailingAnchor),
-            tintView.topAnchor.constraint(equalTo: effectView.topAnchor),
-            tintView.bottomAnchor.constraint(equalTo: effectView.bottomAnchor)
-        ])
-        
+        // Hairline edge so the panel reads crisply on busy backgrounds.
+        effectView.layer?.borderWidth = 1
+        effectView.layer?.borderColor = NSColor.separatorColor.cgColor
+
         self.contentView = effectView
     }
     

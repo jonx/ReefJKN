@@ -49,7 +49,7 @@ struct PreferencesGeneralView: View {
             }
             
             Section {
-                Toggle("Launch Reef at login", isOn: $launchOnLogin)
+                Toggle("Launch ReefJKN at login", isOn: $launchOnLogin)
                     .onChange(of: launchOnLogin) { _, newValue in
                         setLaunchAtLogin(enabled: newValue)
                     }
@@ -82,13 +82,13 @@ struct PreferencesGeneralView: View {
                     }
                 }
             } footer: {
-                Text("The window switcher shows a small preview of each window. This requires Screen Recording access; without it, the app icon is shown instead. Reef only takes still snapshots of windows — it never records video or audio.")
+                Text("The window switcher shows a small preview of each window. This requires Screen Recording access; without it, the app icon is shown instead. ReefJKN only takes still snapshots of windows — it never records video or audio.")
             }
 
             Section {
                 Toggle("Automatically check for updates", isOn: $sparkleConnector.automaticallyChecksForUpdates)
             } footer: {
-                Text("When enabled, Reef checks for new versions on launch and periodically. You can always check manually from the menu bar.")
+                Text("When enabled, ReefJKN checks for new versions on launch and periodically. You can always check manually from the menu bar.")
             }
         }
         .formStyle(.grouped)

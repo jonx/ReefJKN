@@ -9,7 +9,7 @@ import SwiftUI
 
 @MainActor
 class PreferencesController {
-    static let settingsWindowIdentifier = NSUserInterfaceItemIdentifier("Reef.SettingsWindow")
+    static let settingsWindowIdentifier = NSUserInterfaceItemIdentifier("ReefJKN.SettingsWindow")
     
     init() {
         setupWindowObserver()

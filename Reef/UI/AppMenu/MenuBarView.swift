@@ -154,7 +154,7 @@ struct MenuBarView: View {
             openPreferencesWindow()
         }
         
-        Button("About Reef") {
+        Button("About ReefJKN") {
             // Activate first: as an accessory app (LSUIElement), the About panel
             // would otherwise open behind the frontmost application's windows.
             NSApp.activate(ignoringOtherApps: true)

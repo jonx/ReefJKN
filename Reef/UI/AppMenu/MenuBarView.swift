@@ -154,8 +154,25 @@ struct MenuBarView: View {
             openPreferencesWindow()
         }
         
-        Button("About Reef") {
+        Button("About ReefJKN") {
+            // Activate first: as an accessory app (LSUIElement), the About panel
+            // would otherwise open behind the frontmost application's windows.
+            NSApp.activate(ignoringOtherApps: true)
             NSApp.orderFrontStandardAboutPanel()
+
+            Task { @MainActor in
+                for _ in 0..<6 {
+                    if let aboutWindow = NSApp.windows.first(where: {
+                        String(describing: type(of: $0)).contains("AboutPanel")
+                    }) {
+                        aboutWindow.orderFrontRegardless()
+                        aboutWindow.makeKeyAndOrderFront(nil)
+                        return
+                    }
+
+                    try? await Task.sleep(nanoseconds: 50_000_000)
+                }
+            }
         }
         
         Button("Quit") {

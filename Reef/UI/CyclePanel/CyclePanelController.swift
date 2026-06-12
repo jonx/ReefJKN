@@ -7,6 +7,7 @@
 
 import AppKit
 import SwiftUI
+import Combine
 
 
 @MainActor
@@ -17,16 +18,20 @@ final class CyclePanelController: NSObject {
     private var keyDownMonitor: Any?
     private var currentApplication: Application?
     private var panelAnchorCenter: CGPoint?
+    private var previewHintObservation: AnyCancellable?
 
     private let panelContentWidth: CGFloat = 400
     private let maxPanelFrameHeightCap: CGFloat = 520
 
     // Keep these aligned with CyclePanelView.
-    private let headerHeight: CGFloat = 44
+    private let headerHeight: CGFloat = 42
     private let dividerHeight: CGFloat = 1
-    private let rowHeight: CGFloat = 44
-    private let rowSpacing: CGFloat = 4
-    private let listVerticalPadding: CGFloat = 8
+    private let rowSpacing: CGFloat = 2
+    private let listVerticalPadding: CGFloat = 6
+    private let previewHintHeight: CGFloat = 26
+
+    // Rows are taller when window previews are shown.
+    private var rowHeight: CGFloat { state.previewsEnabled ? 88 : 36 }
 
     private var minPanelContentHeight: CGFloat {
         // Minimum height that still matches the layout for one row.
@@ -36,13 +41,25 @@ final class CyclePanelController: NSObject {
     override init() {
         super.init()
         createPanel()
+
+        // Resize the panel when the preview hint is dismissed while visible.
+        previewHintObservation = state.$showsPreviewHint
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                Task { @MainActor in
+                    guard let self, self.panel.isVisible else { return }
+                    self.updatePanelSize()
+                }
+            }
     }
     
     private func createPanel() {
         let contentRect = NSRect(x: 0, y: 0, width: panelContentWidth, height: 300)
         panel = CyclePanel(contentRect: contentRect)
         
-        let contentView = CyclePanelView(state: state)
+        let contentView = CyclePanelView(state: state) { [weak self] index in
+            self?.activateItem(at: index)
+        }
         let hostingView = NSHostingView(rootView: contentView)
         hostingView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -87,7 +104,8 @@ final class CyclePanelController: NSObject {
         let rowsHeight = CGFloat(itemCount) * rowHeight
         let spacingHeight = CGFloat(max(0, itemCount - 1)) * rowSpacing
         let listHeight = rowsHeight + spacingHeight + (listVerticalPadding * 2)
-        let desiredContentHeight = headerHeight + dividerHeight + listHeight
+        let hintHeight = state.showsPreviewHint ? dividerHeight + previewHintHeight : 0
+        let desiredContentHeight = headerHeight + dividerHeight + listHeight + hintHeight
 
         let maxContentHeightByScreen: CGFloat = {
             let visibleFrameHeight = (panel.screen ?? NSScreen.main)?.visibleFrame.height ?? maxPanelFrameHeightCap
@@ -132,6 +150,14 @@ final class CyclePanelController: NSObject {
         return currentApplication.title == application.title
     }
     
+    // Called when user clicks a row
+    func activateItem(at index: Int) {
+        guard index < state.items.count else { return }
+
+        state.selectedIndex = index
+        activateSelectedWindow()
+    }
+
     // Called when user releases Ctrl
     func activateSelectedWindow() {
         guard let item = state.currentItem else {
@@ -143,10 +169,15 @@ final class CyclePanelController: NSObject {
         case .window(let window):
             window.focus()
             hideSwitcher()
-        case .action:
+        case .action(let action):
             let application = currentApplication
             hideSwitcher()
-            
+
+            if action == .grantAccessibility {
+                SystemSettingsPane.accessibility.open()
+                return
+            }
+
             Task { @MainActor in
                 guard let application else {
                     NSSound.beep()

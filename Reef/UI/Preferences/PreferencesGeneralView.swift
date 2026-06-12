@@ -10,13 +10,15 @@ import ServiceManagement
 import ApplicationServices
 
 struct PreferencesGeneralView: View {
+    @EnvironmentObject var sparkleConnector: SparkleConnector
     @AppStorage("launchOnLogin") private var launchOnLogin = true
 //    @AppStorage("hideMenubarIcon") private var hideMenubarIcon = false
     @AppStorage("appearance") private var appearance = "system"
     @AppStorage("defaultNumberOrder") private var defaultNumberOrder = "rightHanded"
     
     @State private var hasAccessibilityPermission = AXIsProcessTrusted()
-    
+    @State private var hasScreenRecordingPermission = CGPreflightScreenCaptureAccess()
+
     // Timer to poll for accessibility permission changes
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
@@ -47,7 +49,7 @@ struct PreferencesGeneralView: View {
             }
             
             Section {
-                Toggle("Launch Reef at login", isOn: $launchOnLogin)
+                Toggle("Launch ReefJKN at login", isOn: $launchOnLogin)
                     .onChange(of: launchOnLogin) { _, newValue in
                         setLaunchAtLogin(enabled: newValue)
                     }
@@ -63,19 +65,43 @@ struct PreferencesGeneralView: View {
             } footer: {
                 Text("Number order sets the order in which numbers are displayed in the menubar")
             }
+
+            Section {
+                if hasScreenRecordingPermission {
+                    LabeledContent("Window previews", value: "Enabled")
+                } else {
+                    HStack {
+                        Text("Window previews")
+                        Spacer()
+                        Button("Grant Screen Recording Access…") {
+                            // Deliberately avoid CGRequestScreenCaptureAccess():
+                            // its system dialog has alarming "screen and audio"
+                            // wording. The Settings pane is a calm toggle.
+                            SystemSettingsPane.screenRecording.open()
+                        }
+                    }
+                }
+            } footer: {
+                Text("The window switcher shows a small preview of each window. This requires Screen Recording access; without it, the app icon is shown instead. ReefJKN only takes still snapshots of windows — it never records video or audio.")
+            }
+
+            Section {
+                Toggle("Automatically check for updates", isOn: $sparkleConnector.automaticallyChecksForUpdates)
+            } footer: {
+                Text("When enabled, ReefJKN checks for new versions on launch and periodically. You can always check manually from the menu bar.")
+            }
         }
         .formStyle(.grouped)
-        .frame(height: hasAccessibilityPermission ? 140 : 205)
+        .frame(height: hasAccessibilityPermission ? 310 : 375)
         .onReceive(timer) { _ in
             // Poll for permission changes
             hasAccessibilityPermission = AXIsProcessTrusted()
+            hasScreenRecordingPermission = CGPreflightScreenCaptureAccess()
         }
     }
     
     private func openAccessibilitySettings() {
-        // Open System Settings to the Privacy & Security > Accessibility pane
-        let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
-        NSWorkspace.shared.open(url)
+        SystemSettingsPane.accessibility.open()
     }
     
     private func setLaunchAtLogin(enabled: Bool) {
@@ -102,4 +128,5 @@ struct PreferencesGeneralView: View {
 
 #Preview {
     PreferencesGeneralView()
+        .environmentObject(SparkleConnector())
 }

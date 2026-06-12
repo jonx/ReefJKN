@@ -1,17 +1,29 @@
-# Reef
+# ReefJKN
 
-The macOS window manager that gives every app its own Alt-Tab. 
+A personal fork of [Reef](https://github.com/gouwsxander/Reef) by Xander Gouws — the macOS window manager that gives every app its own Alt-Tab.
 
 ![Cover photo. Reef logo and UI.](./github-assets/reef-banner-1280-short.jpg)
 
-[Download for macOS](https://getreef.app) · [GitHub Releases](https://github.com/gouwsxander/Reef/releases/latest) (Requires macOS 14.6+)
+Requires macOS 14.6+
+
+
+## What's different in this fork
+
+This fork builds on [gouwsxander/Reef](https://github.com/gouwsxander/Reef) with a focus on a more modern switcher and a friendlier permission experience:
+
+![The window switcher with live window previews](./github-assets/switcher-panel.png)
+
+- **Window previews** — the switcher can show a live snapshot of each window (like the screenshot above). This is optional and requires Screen Recording access; ReefJKN only takes still snapshots, never video or audio. Without the grant, the switcher falls back to a compact text-only list.
+- **Modernized switcher panel** — native system material that follows Light/Dark mode, menu-style selection highlight, app icon in the header, tighter layout.
+- **Click to switch** — entries in the switcher are clickable; the keyboard-only flow still works as before.
+- **Gentler permission handling** — if Accessibility access is missing, the switcher says so and takes you straight to the right System Settings pane instead of failing silently. Window previews are suggested once via a small dismissible hint, never a system dialog.
+- **No update checks by default** — automatic update checks are opt-in (Preferences → General). Manual "Check for updates…" always works.
+- **Small fixes** — the About panel opens in front instead of behind other windows.
 
 
 ## Key Features
 
-Reef lets you bind applications to number keys and cycle through their windows with an Alt-Tab-like interface.
-
-We built Reef because we wanted a fast and simple window switcher for macOS.
+ReefJKN lets you bind applications to number keys and cycle through their windows with an Alt-Tab-like interface.
 
 - Bind applications to number keys to refocus to **any** window for that app
 - Assign profiles for different sets of bindings
@@ -45,41 +57,32 @@ To switch between apps and windows:
 2. Press <kbd>0</kbd> multiple times to select the specific window you want.
 3. Release <kbd>Control</kbd> to switch to the selected window.
 
-In this way, Reef gives every app its own 'Alt-Tab'.
+In this way, ReefJKN gives every app its own 'Alt-Tab'.
 
 Note that window switching is scoped to your current [macOS space](https://support.apple.com/en-ca/guide/mac-help/mh14112/mac).
 
 ### Customization
 
-You can customize the modifiers for switching applications and profiles, and for binding different applications in **Reef Preferences → Shortcuts**.
+You can customize the modifiers for switching applications and profiles, and for binding different applications in **Preferences → Shortcuts**.
 
-Reef also pairs well with [Rectangle](https://github.com/rxhanson/Rectangle):
+ReefJKN also pairs well with [Rectangle](https://github.com/rxhanson/Rectangle):
 - Rectangle positions & re-arranges your windows
-- Reef re-focuses your windows
+- ReefJKN re-focuses your windows
 
 
 ## Installation
 
-Download the latest release on [our website](https://getreef.app) or [GitHub](https://github.com/gouwsxander/Reef/releases/latest)
-
-Simply: 
-1) Download the `.zip` and unzip the file.
-2) Drag `Reef.app` into your Applications folder.
-
-Reef is free/pay-what-you-want. Use the link on our website to support us.
-
-### Compatibility
-
-Reef is compatible with **macOS 14.6 (Sonoma)** and onwards. 
-
-You can find your macOS version from the ** → About This Mac** page.
+Clone the repo and build with Xcode.
 
 
 ## Development
 
-Please share issues and feedback via the [GitHub issues page](https://github.com/gouwsxander/Reef/issues).
+Issues and feedback via the [GitHub issues page](https://github.com/jonx/Reef/issues).
 
-Feel free to submit pull requests, though we can't guarantee that we'll get to them.
+
+## Credits
+
+Based on [Reef](https://github.com/gouwsxander/Reef) by [Xander Gouws](https://github.com/gouwsxander). All original work and architecture is theirs. This fork's additions are free to use or pull back upstream.
 
 
 ## FAQ

@@ -7,6 +7,20 @@ The macOS window manager that gives every app its own Alt-Tab.
 [Download for macOS](https://getreef.app) · [GitHub Releases](https://github.com/gouwsxander/Reef/releases/latest) (Requires macOS 14.6+)
 
 
+## What's different in this fork
+
+This fork builds on [gouwsxander/Reef](https://github.com/gouwsxander/Reef) with a focus on a more modern switcher and a friendlier permission experience:
+
+![The window switcher with live window previews](./github-assets/switcher-panel.png)
+
+- **Window previews** — the switcher can show a live snapshot of each window (like the screenshot above). This is optional and requires Screen Recording access; Reef only takes still snapshots, never video or audio. Without the grant, the switcher falls back to a compact text-only list.
+- **Modernized switcher panel** — native system material that follows Light/Dark mode, menu-style selection highlight, app icon in the header, tighter layout.
+- **Click to switch** — entries in the switcher are clickable; the keyboard-only flow still works as before.
+- **Gentler permission handling** — if Accessibility access is missing, the switcher says so and takes you straight to the right System Settings pane instead of failing silently. Window previews are suggested once via a small dismissible hint, never a system dialog.
+- **No update checks by default** — automatic update checks are opt-in (Preferences → General). Manual "Check for updates…" always works.
+- **Small fixes** — the About panel opens in front instead of behind other windows.
+
+
 ## Key Features
 
 Reef lets you bind applications to number keys and cycle through their windows with an Alt-Tab-like interface.

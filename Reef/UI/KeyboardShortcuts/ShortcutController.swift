@@ -72,30 +72,49 @@ final class ShortcutController {
     }
     
     private func handleActivate(number: Int) {
+        let isAutoMode = UserDefaults.standard.string(forKey: SwitcherMode.userDefaultsKey) != SwitcherMode.bindings.rawValue
+
+        if isAutoMode {
+            guard let frontApp = Application.getFrontApplication() else {
+                NSSound.beep()
+                return
+            }
+
+            if cycleController.panel.isVisible {
+                if cycleController.isShowingSwitcher(for: frontApp) {
+                    cycleController.cycleNext()
+                } else {
+                    cycleController.showSwitcher(for: frontApp)
+                }
+                return
+            }
+
+            // Already in the front app — start at second window to cycle forward.
+            cycleController.showSwitcher(for: frontApp, startIndex: 1)
+            return
+        }
+
+        // Bindings mode: look up the app assigned to this number key.
         guard let binding = profileManager.application(for: number) else {
             NSSound.beep()
             return
         }
-        
-        // If panel is already visible, cycle if same app; otherwise switch to the newly requested app.
+
         if cycleController.panel.isVisible {
             if cycleController.isShowingSwitcher(for: binding) {
                 cycleController.cycleNext()
             } else {
                 cycleController.showSwitcher(for: binding)
             }
-            
             return
         }
 
-        // Determine starting index
         var startIndex = 0
         if let frontApp = Application.getFrontApplication(),
            frontApp.title == binding.title {
-            // Already on this app, start at second window
             startIndex = 1
         }
-        
+
         cycleController.showSwitcher(for: binding, startIndex: startIndex)
     }
     

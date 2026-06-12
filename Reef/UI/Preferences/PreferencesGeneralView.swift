@@ -15,6 +15,7 @@ struct PreferencesGeneralView: View {
 //    @AppStorage("hideMenubarIcon") private var hideMenubarIcon = false
     @AppStorage("appearance") private var appearance = "system"
     @AppStorage("defaultNumberOrder") private var defaultNumberOrder = "rightHanded"
+    @AppStorage(SwitcherMode.userDefaultsKey) private var switcherMode = SwitcherMode.auto.rawValue
     
     @State private var hasAccessibilityPermission = AXIsProcessTrusted()
     @State private var hasScreenRecordingPermission = CGPreflightScreenCaptureAccess()
@@ -48,6 +49,20 @@ struct PreferencesGeneralView: View {
                 }
             }
             
+            Section {
+                Picker("Switcher mode", selection: $switcherMode) {
+                    Text("Auto").tag(SwitcherMode.auto.rawValue)
+                    Text("Bindings").tag(SwitcherMode.bindings.rawValue)
+                }
+                .pickerStyle(.segmented)
+            } footer: {
+                if switcherMode == SwitcherMode.auto.rawValue {
+                    Text("Press the shortcut and the windows of whichever app is in front appear — no setup needed.")
+                } else {
+                    Text("Assign apps to number keys in Profiles, then jump to them from anywhere.")
+                }
+            }
+
             Section {
                 Toggle("Launch ReefJKN at login", isOn: $launchOnLogin)
                     .onChange(of: launchOnLogin) { _, newValue in
@@ -92,7 +107,7 @@ struct PreferencesGeneralView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(height: hasAccessibilityPermission ? 310 : 375)
+        .frame(height: hasAccessibilityPermission ? 400 : 465)
         .onReceive(timer) { _ in
             // Poll for permission changes
             hasAccessibilityPermission = AXIsProcessTrusted()

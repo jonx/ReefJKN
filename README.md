@@ -77,7 +77,7 @@ Clone the repo and build with Xcode.
 
 ## Development
 
-Issues and feedback via the [GitHub issues page](https://github.com/jonx/Reef/issues).
+Issues and feedback via the [GitHub issues page](https://github.com/jonx/ReefJKN/issues).
 
 
 ## Credits

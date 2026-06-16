@@ -75,17 +75,15 @@ final class ShortcutController {
         let isAutoMode = UserDefaults.standard.string(forKey: SwitcherMode.userDefaultsKey) != SwitcherMode.bindings.rawValue
 
         if isAutoMode {
-            guard let frontApp = Application.getFrontApplication() else {
-                NSSound.beep()
+            // Panel already open — the panel itself has focus, so getFrontApplication()
+            // would return ReefJKN. Just cycle to the next window instead.
+            if cycleController.panel.isVisible {
+                cycleController.cycleNext()
                 return
             }
 
-            if cycleController.panel.isVisible {
-                if cycleController.isShowingSwitcher(for: frontApp) {
-                    cycleController.cycleNext()
-                } else {
-                    cycleController.showSwitcher(for: frontApp)
-                }
+            guard let frontApp = Application.getFrontApplication() else {
+                NSSound.beep()
                 return
             }
 

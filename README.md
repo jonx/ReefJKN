@@ -13,6 +13,7 @@ This fork builds on [gouwsxander/Reef](https://github.com/gouwsxander/Reef) with
 
 ![The window switcher with live window previews](./github-assets/switcher-panel.png)
 
+- **Auto switcher mode** — press the shortcut and the windows of whatever app is currently in front appear instantly, no setup needed. Press again to cycle. Switch back to Bindings mode in Preferences → General if you prefer the manual key-assignment workflow.
 - **Window previews** — the switcher can show a live snapshot of each window (like the screenshot above). This is optional and requires Screen Recording access; ReefJKN only takes still snapshots, never video or audio. Without the grant, the switcher falls back to a compact text-only list.
 - **Modernized switcher panel** — native system material that follows Light/Dark mode, menu-style selection highlight, app icon in the header, tighter layout.
 - **Click to switch** — entries in the switcher are clickable; the keyboard-only flow still works as before.
@@ -33,33 +34,27 @@ ReefJKN lets you bind applications to number keys and cycle through their window
 
 ## Usage
 
-### Binding
-You should start by binding different applications to the number keys. You can do this:
+### Auto mode (default)
+
+No setup required. Press your activate shortcut (default: <kbd>Ctrl</kbd> + a number key) from any app and a panel appears showing that app's windows. Press the shortcut again to cycle forward; release to switch.
+
+### Bindings mode
+
+Switch to Bindings mode in **Preferences → General** to assign specific apps to number keys.
+
+#### Binding apps to keys
 - through **Preferences → Profiles** (accessed through the menu bar), or
-- by selecting the application of your choice and then pressing <kbd>Ctrl</kbd> + <kbd>Option</kbd> + <kbd>Shift</kbd>.
+- by focusing the app and pressing <kbd>Ctrl</kbd> + <kbd>Option</kbd> + <kbd>Shift</kbd> + a number key.
 
-### Profiles
-You can also set your bindings up in different profiles.
+#### Profiles
+You can organise bindings into profiles, e.g. "Coding" and "Browsing". Switch between them via the menu bar or by pressing <kbd>Ctrl</kbd> + <kbd>Option</kbd> + <kbd>[0-9]</kbd>.
 
-For example, you may want two profiles:
-- "Coding": Which binds your favourite editor, browser, and terminal
-- "Browsing": Which binds your favourite web browser, messaging app, and music client
+#### Switching windows
+1. Hold <kbd>Control</kbd> and press the number key bound to an app to open its window panel.
+2. Press the number key again to cycle to the next window.
+3. Release <kbd>Control</kbd> to switch.
 
-You can switch between profiles:
-- using the menu bar, or
-- by binding them to the number keys, and then pressing <kbd>Ctrl</kbd> + <kbd>Option</kbd> + <kbd>[0-9]</kbd>.
-
-### Switching applications
-Suppose you're in your coding profile, and have your editor bound to `0`.
-
-To switch between apps and windows:
-1. Hold <kbd>Control</kbd> and press <kbd>0</kbd> to open a panel showing each of your editor's windows.
-2. Press <kbd>0</kbd> multiple times to select the specific window you want.
-3. Release <kbd>Control</kbd> to switch to the selected window.
-
-In this way, ReefJKN gives every app its own 'Alt-Tab'.
-
-Note that window switching is scoped to your current [macOS space](https://support.apple.com/en-ca/guide/mac-help/mh14112/mac).
+In both modes, window switching is scoped to your current [macOS space](https://support.apple.com/en-ca/guide/mac-help/mh14112/mac).
 
 ### Customization
 

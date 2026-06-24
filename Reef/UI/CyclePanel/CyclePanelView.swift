@@ -78,6 +78,34 @@ struct CyclePanelView: View {
                 }
             }
 
+            // One-time hint on first auto mode open, pointing to Preferences.
+            if state.showsAutoModeHint {
+                Divider()
+
+                HStack(spacing: 6) {
+                    Button("Switch to Bindings mode in Preferences → General") {
+                        state.dismissAutoModeHint()
+                        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                    }
+                    .buttonStyle(.link)
+                    .font(.caption)
+
+                    Spacer()
+
+                    Button {
+                        state.dismissAutoModeHint()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 8, weight: .bold))
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Don't show again")
+                }
+                .padding(.horizontal, 12)
+                .frame(height: 26)
+            }
+
             // Optional, dismissible nudge towards window previews. Kept out of
             // the cycle list: previews are taste, not a requirement.
             if state.showsPreviewHint {

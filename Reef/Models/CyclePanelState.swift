@@ -50,14 +50,21 @@ final class CyclePanelState: ObservableObject {
     private var captureTask: Task<Void, Never>?
 
     // Subtle, dismissible footer pointing at the Screen Recording grant.
-    // Previews are a nice-to-have, so unlike the Accessibility flow this
-    // must never block or replace the window list.
     @Published var showsPreviewHint = false
     private static let hidePreviewHintKey = "hidePreviewHint"
 
     func dismissPreviewHint() {
         UserDefaults.standard.set(true, forKey: Self.hidePreviewHintKey)
         showsPreviewHint = false
+    }
+
+    // One-time hint shown the first time auto mode fires, nudging towards Preferences.
+    @Published var showsAutoModeHint = false
+    private static let hideAutoModeHintKey = "hideAutoModeHint"
+
+    func dismissAutoModeHint() {
+        UserDefaults.standard.set(true, forKey: Self.hideAutoModeHintKey)
+        showsAutoModeHint = false
     }
     
     var windows: [Window] {
@@ -119,6 +126,11 @@ final class CyclePanelState: ObservableObject {
         showsPreviewHint = !windows.isEmpty
             && !previewsEnabled
             && !UserDefaults.standard.bool(forKey: Self.hidePreviewHintKey)
+
+        let isAutoMode = UserDefaults.standard.string(forKey: SwitcherMode.userDefaultsKey) != SwitcherMode.bindings.rawValue
+        showsAutoModeHint = !windows.isEmpty
+            && isAutoMode
+            && !UserDefaults.standard.bool(forKey: Self.hideAutoModeHintKey)
 
         self.selectedIndex = 0
     }

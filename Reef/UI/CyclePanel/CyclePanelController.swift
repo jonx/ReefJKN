@@ -19,6 +19,7 @@ final class CyclePanelController: NSObject {
     private var currentApplication: Application?
     private var panelAnchorCenter: CGPoint?
     private var previewHintObservation: AnyCancellable?
+    private var autoModeHintObservation: AnyCancellable?
 
     private let panelContentWidth: CGFloat = 400
     private let maxPanelFrameHeightCap: CGFloat = 520
@@ -42,8 +43,17 @@ final class CyclePanelController: NSObject {
         super.init()
         createPanel()
 
-        // Resize the panel when the preview hint is dismissed while visible.
+        // Resize the panel when hints are dismissed while visible.
         previewHintObservation = state.$showsPreviewHint
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                Task { @MainActor in
+                    guard let self, self.panel.isVisible else { return }
+                    self.updatePanelSize()
+                }
+            }
+
+        autoModeHintObservation = state.$showsAutoModeHint
             .removeDuplicates()
             .sink { [weak self] _ in
                 Task { @MainActor in
@@ -105,7 +115,8 @@ final class CyclePanelController: NSObject {
         let spacingHeight = CGFloat(max(0, itemCount - 1)) * rowSpacing
         let listHeight = rowsHeight + spacingHeight + (listVerticalPadding * 2)
         let hintHeight = state.showsPreviewHint ? dividerHeight + previewHintHeight : 0
-        let desiredContentHeight = headerHeight + dividerHeight + listHeight + hintHeight
+        let autoModeHintHeight = state.showsAutoModeHint ? dividerHeight + previewHintHeight : 0
+        let desiredContentHeight = headerHeight + dividerHeight + listHeight + hintHeight + autoModeHintHeight
 
         let maxContentHeightByScreen: CGFloat = {
             let visibleFrameHeight = (panel.screen ?? NSScreen.main)?.visibleFrame.height ?? maxPanelFrameHeightCap

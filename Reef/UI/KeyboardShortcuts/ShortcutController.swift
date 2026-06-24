@@ -17,14 +17,17 @@ extension KeyboardShortcuts.Name {
     static let bindShortcuts: [KeyboardShortcuts.Name] = (0...9).map { number in
         Self("bind\(number)")
     }
-    
+
     static let activateShortcuts: [KeyboardShortcuts.Name] = (0...9).map { number in
         Self("activate\(number)")
     }
-    
+
     static let profileShortcuts: [KeyboardShortcuts.Name] = (0...9).map { number in
         Self("profile\(number)")
     }
+
+    static let moveWindowLeft  = Self("moveWindowLeft",  default: .init(.leftArrow,  modifiers: [.command, .shift]))
+    static let moveWindowRight = Self("moveWindowRight", default: .init(.rightArrow, modifiers: [.command, .shift]))
 }
 
 @MainActor
@@ -44,15 +47,18 @@ final class ShortcutController {
             KeyboardShortcuts.onKeyUp(for: .bindShortcuts[number]) {
                 self.handleBind(number: number)
             }
-            
+
             KeyboardShortcuts.onKeyDown(for: .activateShortcuts[number]) {
                 self.handleActivate(number: number)
             }
-            
+
             KeyboardShortcuts.onKeyDown(for: .profileShortcuts[number]) {
                 self.handleProfile(number: number)
             }
         }
+
+        KeyboardShortcuts.onKeyDown(for: .moveWindowLeft)  { self.handleMoveWindow(direction: .previous) }
+        KeyboardShortcuts.onKeyDown(for: .moveWindowRight) { self.handleMoveWindow(direction: .next) }
     }
     
     private func handleBind(number: Int) {
@@ -87,8 +93,7 @@ final class ShortcutController {
                 return
             }
 
-            // Already in the front app — start at second window to cycle forward.
-            cycleController.showSwitcher(for: frontApp, startIndex: 1)
+            cycleController.showSwitcher(for: frontApp)
             return
         }
 
@@ -116,6 +121,14 @@ final class ShortcutController {
         cycleController.showSwitcher(for: binding, startIndex: startIndex)
     }
     
+    private func handleMoveWindow(direction: ScreenDirection) {
+        guard let window = Window.getFrontWindow() else {
+            NSSound.beep()
+            return
+        }
+        window.moveToAdjacentScreen(direction: direction)
+    }
+
     func handleProfile(number: Int) {
         guard let profileID = profileManager.profileID(forNumber: number) else {
             NSSound.beep()

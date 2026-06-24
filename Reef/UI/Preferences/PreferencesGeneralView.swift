@@ -107,7 +107,6 @@ struct PreferencesGeneralView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(height: hasAccessibilityPermission ? 400 : 465)
         .onReceive(timer) { _ in
             // Poll for permission changes
             hasAccessibilityPermission = AXIsProcessTrusted()

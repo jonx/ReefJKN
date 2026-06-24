@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import KeyboardShortcuts
 
 struct PreferencesShortcutsView: View {
     @StateObject private var modifierManager: ModifierManager = {
@@ -120,9 +121,14 @@ struct PreferencesShortcutsView: View {
             } footer: {
                 Text("⌃ Control  •  ⌥ Option  •  ⇧ Shift  •  ⌘ Command")
             }
+            Section {
+                KeyboardShortcuts.Recorder("Move window to previous monitor", name: .moveWindowLeft)
+                KeyboardShortcuts.Recorder("Move window to next monitor",     name: .moveWindowRight)
+            } footer: {
+                Text("Moves the focused window to the adjacent monitor. Defaults to ⌘⇧← / ⌘⇧→ — change here if they conflict with other shortcuts.")
+            }
         }
         .formStyle(.grouped)
-        .frame(height: !modifierManager.activateEnabled || !modifierManager.bindEnabled || !modifierManager.profileEnabled ? 395 : 360)
         .alert("Reset shortcut modifiers?", isPresented: $showingResetConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Reset", role: .destructive) {

@@ -10,6 +10,7 @@ import SwiftUI
 struct PreferencesProfilesView: View {
     @EnvironmentObject var profileManager: ProfileManager
     @AppStorage("defaultNumberOrder") private var defaultNumberOrder = "rightHanded"
+    @AppStorage(SwitcherMode.userDefaultsKey) private var switcherMode = SwitcherMode.auto.rawValue
     @StateObject private var modifierManager: ModifierManager = {
         if let manager = AppDelegate.modifierManager {
             return manager
@@ -44,6 +45,14 @@ struct PreferencesProfilesView: View {
     @State private var selectedProfileID: UUID?
     
     var body: some View {
+        if switcherMode == SwitcherMode.auto.rawValue {
+            ContentUnavailableView(
+                "Not used in Auto mode",
+                systemImage: "person.crop.rectangle.stack",
+                description: Text("Profiles let you assign apps to number keys. Switch to Bindings mode in General to use them.")
+            )
+            .frame(height: 635)
+        } else {
         HStack(spacing: 0) {
             VStack(spacing: 0) {
                 List(sortedProfiles, id: \.id, selection: $selectedProfileID) { profile in
@@ -105,6 +114,7 @@ struct PreferencesProfilesView: View {
                 selectedProfileID = profileManager.currentProfileID
             }
         }
+        } // end else
     }
     
     private func addProfile() {

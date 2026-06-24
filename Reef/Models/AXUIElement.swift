@@ -46,6 +46,30 @@ extension AXUIElement {
     func test() -> Int? {
         return self.getAttributeValue(.identifier)
     }
+
+    func getPosition() -> CGPoint? {
+        var raw: AnyObject?
+        guard AXUIElementCopyAttributeValue(self, "AXPosition" as CFString, &raw) == .success,
+              let axVal = raw else { return nil }
+        var point = CGPoint.zero
+        guard AXValueGetValue(axVal as! AXValue, .cgPoint, &point) else { return nil }
+        return point
+    }
+
+    func getSize() -> CGSize? {
+        var raw: AnyObject?
+        guard AXUIElementCopyAttributeValue(self, "AXSize" as CFString, &raw) == .success,
+              let axVal = raw else { return nil }
+        var size = CGSize.zero
+        guard AXValueGetValue(axVal as! AXValue, .cgSize, &size) else { return nil }
+        return size
+    }
+
+    func setPosition(_ point: CGPoint) {
+        var p = point
+        guard let axVal = AXValueCreate(.cgPoint, &p) else { return }
+        AXUIElementSetAttributeValue(self, "AXPosition" as CFString, axVal)
+    }
 }
 
 

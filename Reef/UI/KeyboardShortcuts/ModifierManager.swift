@@ -37,6 +37,20 @@ final class ModifierManager: ObservableObject {
     @AppStorage("activateShift") var activateShift = false {
         didSet { updateShortcuts() }
     }
+
+    @AppStorage("reverseEnabled") private var reverseEnabledStored = true
+    @AppStorage("reverseControl") var reverseControl = true {
+        didSet { updateShortcuts() }
+    }
+    @AppStorage("reverseOption") var reverseOption = false {
+        didSet { updateShortcuts() }
+    }
+    @AppStorage("reverseCommand") var reverseCommand = false {
+        didSet { updateShortcuts() }
+    }
+    @AppStorage("reverseShift") var reverseShift = true {
+        didSet { updateShortcuts() }
+    }
     
     @AppStorage("profileEnabled") private var profileEnabledStored = true
     @AppStorage("profileControl") var profileControl = true {
@@ -55,6 +69,7 @@ final class ModifierManager: ObservableObject {
     var bindEnabled: Bool { !bindModifiers.isEmpty }
     var activateEnabled: Bool { !activateModifiers.isEmpty }
     var profileEnabled: Bool { !profileModifiers.isEmpty }
+    var reverseEnabled: Bool { !reverseModifiers.isEmpty }
 
     
     init() {
@@ -80,6 +95,15 @@ final class ModifierManager: ObservableObject {
         return modifiers
     }
     
+    var reverseModifiers: NSEvent.ModifierFlags {
+        var modifiers: NSEvent.ModifierFlags = []
+        if reverseControl { modifiers.insert(.control) }
+        if reverseOption  { modifiers.insert(.option) }
+        if reverseCommand { modifiers.insert(.command) }
+        if reverseShift   { modifiers.insert(.shift) }
+        return modifiers
+    }
+
     var profileModifiers: NSEvent.ModifierFlags {
         var modifiers: NSEvent.ModifierFlags = []
         if profileControl { modifiers.insert(.control) }
@@ -122,6 +146,11 @@ final class ModifierManager: ObservableObject {
         activateShift = false
         activateCommand = false
 
+        reverseControl = true
+        reverseOption = false
+        reverseShift = true
+        reverseCommand = false
+
         profileControl = true
         profileOption = true
         profileShift = false
@@ -136,13 +165,16 @@ final class ModifierManager: ObservableObject {
     private func updateShortcuts() {
         let bindMods = bindModifiers
         let activateMods = activateModifiers
+        let reverseMods = reverseModifiers
         let profileMods = profileModifiers
         let bindIsEnabled = !bindMods.isEmpty
         let activateIsEnabled = !activateMods.isEmpty
+        let reverseIsEnabled = !reverseMods.isEmpty
         let profileIsEnabled = !profileMods.isEmpty
 
         bindEnabledStored = bindIsEnabled
         activateEnabledStored = activateIsEnabled
+        reverseEnabledStored = reverseIsEnabled
         profileEnabledStored = profileIsEnabled
 
         for number in 0...9 {
@@ -154,6 +186,11 @@ final class ModifierManager: ObservableObject {
             KeyboardShortcuts.setShortcut(
                 activateIsEnabled ? .init(numberKeys[number], modifiers: activateMods) : nil,
                 for: .activateShortcuts[number]
+            )
+
+            KeyboardShortcuts.setShortcut(
+                reverseIsEnabled ? .init(numberKeys[number], modifiers: reverseMods) : nil,
+                for: .reverseShortcuts[number]
             )
 
             KeyboardShortcuts.setShortcut(

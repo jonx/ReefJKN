@@ -84,12 +84,13 @@ final class CyclePanelController: NSObject {
     }
     
     // Called when user presses Ctrl+[number]
-    func showSwitcher(for application: Application, startIndex: Int = 0) {
+    func showSwitcher(for application: Application, startIndex: Int = 0, fromEnd: Bool = false) {
         currentApplication = application
         state.setApplication(application)
-        
-        // If starting index is provided (e.g., already on that app), use it
-        if startIndex > 0 && startIndex < state.items.count {
+
+        if fromEnd {
+            state.selectedIndex = max(0, state.items.count - 1)
+        } else if startIndex > 0 && startIndex < state.items.count {
             state.selectedIndex = startIndex
         }
         
@@ -143,6 +144,10 @@ final class CyclePanelController: NSObject {
     // Called when user presses Ctrl+[number] again while panel is visible
     func cycleNext() {
         state.cycleNext()
+    }
+
+    func cyclePrevious() {
+        state.cyclePrevious()
     }
     
     func isShowingSwitcher(for application: Application) -> Bool {

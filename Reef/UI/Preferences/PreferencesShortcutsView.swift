@@ -87,6 +87,15 @@ struct PreferencesShortcutsView: View {
                     }
 
                     GridRow {
+                        Text(verbatim: "Switch app (reverse)")
+                            .frame(minWidth: 150, alignment: .leading)
+                        Toggle("", isOn: $modifierManager.reverseControl).toggleStyle(.checkbox)
+                        Toggle("", isOn: $modifierManager.reverseOption).toggleStyle(.checkbox)
+                        Toggle("", isOn: $modifierManager.reverseShift).toggleStyle(.checkbox)
+                        Toggle("", isOn: $modifierManager.reverseCommand).toggleStyle(.checkbox)
+                    }
+
+                    GridRow {
                         Text(verbatim: "Switch profile")
                             .frame(minWidth: 150, alignment: .leading)
                         Toggle("", isOn: $modifierManager.profileControl).toggleStyle(.checkbox)
@@ -139,6 +148,7 @@ struct PreferencesShortcutsView: View {
             Modifiers will be reset to
 
             Activate:\t\t⌃
+            Reverse:\t\t⌃ + ⇧
             Profile:\t\t⌃ + ⌥
             Bind:\t\t⌃ + ⌥ + ⇧
             """)

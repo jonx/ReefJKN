@@ -26,6 +26,10 @@ extension KeyboardShortcuts.Name {
         Self("profile\(number)")
     }
 
+    static let reverseShortcuts: [KeyboardShortcuts.Name] = (0...9).map { number in
+        Self("reverse\(number)")
+    }
+
     static let moveWindowLeft  = Self("moveWindowLeft",  default: .init(.leftArrow,  modifiers: [.command, .shift]))
     static let moveWindowRight = Self("moveWindowRight", default: .init(.rightArrow, modifiers: [.command, .shift]))
 }
@@ -54,6 +58,12 @@ final class ShortcutController {
 
             KeyboardShortcuts.onKeyDown(for: .profileShortcuts[number]) {
                 self.handleProfile(number: number)
+            }
+        }
+
+        for number in 0...9 {
+            KeyboardShortcuts.onKeyDown(for: .reverseShortcuts[number]) {
+                self.handleReverseActivate(number: number)
             }
         }
 
@@ -121,6 +131,41 @@ final class ShortcutController {
         cycleController.showSwitcher(for: binding, startIndex: startIndex)
     }
     
+    private func handleReverseActivate(number: Int) {
+        let isAutoMode = UserDefaults.standard.string(forKey: SwitcherMode.userDefaultsKey) != SwitcherMode.bindings.rawValue
+
+        if isAutoMode {
+            if cycleController.panel.isVisible {
+                cycleController.cyclePrevious()
+                return
+            }
+            guard let frontApp = Application.getFrontApplication() else {
+                NSSound.beep()
+                return
+            }
+            cycleController.showSwitcher(for: frontApp, fromEnd: true)
+            return
+        }
+
+        guard let binding = profileManager.application(for: number) else {
+            NSSound.beep()
+            return
+        }
+        if cycleController.panel.isVisible {
+            if cycleController.isShowingSwitcher(for: binding) {
+                cycleController.cyclePrevious()
+            } else {
+                cycleController.showSwitcher(for: binding, fromEnd: true)
+            }
+            return
+        }
+        var fromEnd = false
+        if let frontApp = Application.getFrontApplication(), frontApp.title == binding.title {
+            fromEnd = true
+        }
+        cycleController.showSwitcher(for: binding, fromEnd: fromEnd)
+    }
+
     private func handleMoveWindow(direction: ScreenDirection) {
         guard let window = Window.getFrontWindow() else {
             NSSound.beep()

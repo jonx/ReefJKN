@@ -19,6 +19,7 @@ This fork builds on [gouwsxander/Reef](https://github.com/gouwsxander/Reef) with
 - **Click to switch** — entries in the switcher are clickable; the keyboard-only flow still works as before.
 - **Gentler permission handling** — if Accessibility access is missing, the switcher says so and takes you straight to the right System Settings pane instead of failing silently. Window previews are suggested once via a small dismissible hint, never a system dialog.
 - **No update checks by default** — automatic update checks are opt-in (Preferences → General). Manual "Check for updates…" always works.
+- **Move window to another monitor** — ⌘⇧← / ⌘⇧→ moves the focused window to the previous or next monitor, preserving its position within the screen. Shortcuts are rebindable in Preferences → Shortcuts.
 - **Small fixes** — the About panel opens in front instead of behind other windows.
 
 

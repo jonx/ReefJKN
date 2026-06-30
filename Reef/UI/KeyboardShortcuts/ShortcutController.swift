@@ -93,7 +93,7 @@ final class ShortcutController {
                 return
             }
 
-            cycleController.showSwitcher(for: frontApp)
+            cycleController.showSwitcher(for: frontApp, startIndex: 1)
             return
         }
 
